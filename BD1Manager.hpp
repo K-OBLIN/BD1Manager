@@ -53,6 +53,6 @@ public:
     [[nodiscard]] bool SaveBD1(const std::string_view filePath) noexcept;
     [[nodiscard]] bool ExportMQO(const std::string_view filePath) noexcept;
 
-    const std::string& GetTextureFileName(std::size_t textureId) const noexcept;
-    void GetBlockData(std::size_t blockId, BD1Format* out_BlockData) const noexcept;
+    const std::string& GetTextureFileName(std::size_t textureId) const noexcept = delete;
+    void GetBlockData(std::size_t blockId, BD1Format* out_BlockData) const noexcept = delete;
 };
