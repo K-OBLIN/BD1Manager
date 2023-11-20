@@ -1,5 +1,7 @@
 # BD1Manager
-X Operations' BD1 File Manager
+X Operations' BD1 File Manager.
+
+You need **C++20** or higher.
 
 **EXAMPLE**
 ```cpp
