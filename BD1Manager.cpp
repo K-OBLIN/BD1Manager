@@ -139,6 +139,9 @@ std::optional<MQOFormat> BD1Manager::ConvertMQO() noexcept {
     if (not std::filesystem::exists(filePath))                  { return false; }
     if (std::filesystem::path(filePath).extension() != ".bd1")  { return false; }
 
+    // Clear
+    m_BD1Data.clear();
+
     // Open
     std::ifstream ifs(filePath.data(), std::ifstream::in | std::ifstream::binary);
     if (not ifs.is_open()) { return false; }
