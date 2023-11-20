@@ -27,7 +27,7 @@ std::optional<MQOFormat> BD1Manager::ConvertMQO() noexcept {
     // Material
     for (auto i = 0; i < MAX_BLOCK_TEXTURE; ++i) {
         MQOMaterial mat;
-        
+
         mat.Name = (m_TextureFileNames[i] == "") ? "empty" : m_TextureFileNames[i];
         mat.ShaderType = MQOMaterialShaderType::Phong;
         mat.RGBA = { 1.0F, 1.0F, 1.0F, 1.0F };
@@ -234,50 +234,51 @@ std::optional<MQOFormat> BD1Manager::ConvertMQO() noexcept {
     if (not ofs.is_open()) { return false; }
 
     // Texture File Name
-    char cBuf[30 + 1]{ '\0' };
     for (const auto& file_name : m_TextureFileNames) {
-        std::snprintf(cBuf, 30, "%s", file_name.c_str());
+        char cBuf[31]{ '\0' };
+        std::snprintf(cBuf, 31, "%s", file_name.c_str());
         cBuf[30] = '\0';
 
-        ofs.write((const char*)cBuf, 30 + 1);
+        ofs.write((const char*)cBuf, 31);
     }
 
     // Number of Block
-    auto number_of_block = m_BD1Data.size();
-    ofs.write((const char*)&number_of_block, sizeof(uint16_t));
+    int16_t number_of_block = m_BD1Data.size();
+    ofs.write((const char*)&number_of_block, sizeof(int16_t));
 
     // Block Data
     for (auto i = 0; i < number_of_block; ++i) {
         // X
         for (auto j = 0; j < NUMBER_OF_VERTICES; ++j) {
-            ofs.write((const char*)&m_BD1Data[i].X[j], sizeof(m_BD1Data[i].X[j]));
+            ofs.write((const char*)&m_BD1Data[i].X[j], sizeof(float));
         }
         // Y
         for (auto j = 0; j < NUMBER_OF_VERTICES; ++j) {
-            ofs.write((const char*)&m_BD1Data[i].Y[j], sizeof(m_BD1Data[i].Y[j]));
+            ofs.write((const char*)&m_BD1Data[i].Y[j], sizeof(float));
         }
         // Z
         for (auto j = 0; j < NUMBER_OF_VERTICES; ++j) {
-            ofs.write((const char*)&m_BD1Data[i].Z[j], sizeof(m_BD1Data[i].Z[j]));
+            ofs.write((const char*)&m_BD1Data[i].Z[j], sizeof(float));
         }
 
         // UV - U
         for (auto j = 0; j < NUMBER_OF_FACES; ++j) {
             for (auto k = 0; k < 4; ++k) {
-                ofs.write((const char*)&m_BD1Data[i].Face[j].UV[k][0], sizeof(m_BD1Data[i].Face[j].UV[k][0]));
+                ofs.write((const char*)&m_BD1Data[i].Face[j].UV[k][0], sizeof(float));
             }
         }
 
         // UV - V
         for (auto j = 0; j < NUMBER_OF_FACES; ++j) {
             for (auto k = 0; k < 4; ++k) {
-                ofs.write((const char*)&m_BD1Data[i].Face[j].UV[k][1], sizeof(m_BD1Data[i].Face[j].UV[k][1]));
+                ofs.write((const char*)&m_BD1Data[i].Face[j].UV[k][1], sizeof(float));
             }
         }
 
         // Texture's Id
         for (auto j = 0; j < NUMBER_OF_FACES; ++j) {
-            ofs.write((const char*)&m_BD1Data[i].Face[j].TextureId, sizeof(m_BD1Data[i].Face[j].TextureId));
+            auto id = int32_t(m_BD1Data[i].Face[j].TextureId);
+            ofs.write((const char*)&id, sizeof(int32_t));
         }
 
         // Enable Flag
